@@ -1,0 +1,19 @@
+#!/bin/bash
+rm -f /tmp/tempfifo1
+rm -f /tmp/a.out
+mkfifo /tmp/tempfifo1 2>/dev/null
+cat << EOF > /tmp/tempfifo1 &
+
+#include <stdio.h>
+int main(int argc, char ** argv) {
+	int i, sum;
+	for (i = 3; i < 1000; i += 3) sum += i;
+	for (i = 5; i < 1000; i += 5) { if (i % 3 != 0) { sum += i; } }
+	printf("%d\n", sum);
+	return 0;
+}
+EOF
+
+cat /tmp/tempfifo1 | gcc -xc -o /tmp/a.out -
+/tmp/a.out
+
