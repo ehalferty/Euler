@@ -1,0 +1,33 @@
+#!/bin/bash
+rm -f /tmp/temp1.asm
+rm -f /tmp/a.out
+cat << 'EOF' > /tmp/temp1.asm
+
+
+
+global start
+
+section .text
+
+start:
+    mov     rax, 0x2000004 ; write
+    mov     rdi, 1 ; stdout
+    mov     rsi, msg
+    mov     rdx, msg.len
+    syscall
+
+    mov     rax, 0x2000001 ; exit
+    mov     rdi, 0
+    syscall
+
+section .data
+
+msg:    db      "Hello, world!", 10
+.len:   equ     $ - msg
+
+
+
+EOF
+
+nasm -f macho64 /tmp/temp1.asm && ld -o /tmp/a.out /tmp/temp1.o
+/tmp/a.out
