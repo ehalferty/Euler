@@ -1,0 +1,34 @@
+#!/bin/bash
+rm -f /tmp/temp1.asm
+rm -f /tmp/a.out
+cat << 'EOF' > /tmp/temp1.asm
+
+
+
+global start
+
+section .text
+start:
+    push    dword msg.len
+    push    dword msg
+    push    dword 1
+    mov     eax, 4
+    sub     esp, 4
+    int     0x80
+    add     esp, 16
+    push    dword 0
+    mov     eax, 1
+    sub     esp, 12
+    int     0x80
+
+section .data
+
+msg:    db      "Hello, world!", 10
+.len:   equ     $ - msg
+
+
+
+EOF
+
+nasm -f macho /tmp/temp1.asm && ld -o /tmp/a.out /tmp/temp1.o
+/tmp/a.out
