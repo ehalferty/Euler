@@ -29,5 +29,9 @@ msg:    db      "Hello, world!", 10
 
 EOF
 
-nasm -f macho64 /tmp/temp1.asm && ld -o /tmp/a.out /tmp/temp1.o
+if [ $(uname) == "Darwin" ]; then
+  nasm -f macho64 /tmp/temp1.asm && ld -o /tmp/a.out /tmp/temp1.o
+else
+  nasm -f elf64 /tmp/temp1.asm && ld -o /tmp/a.out /tmp/temp1.o
+fi
 /tmp/a.out
